@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Test - Marchés Publics</title>
+    <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Outfit:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --secondary: #a855f7;
+            --accent: #f43f5e;
+            --bg: #0f172a;
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: radial-gradient(circle at top right, #1e1b4b, #0f172a);
+            color: #f8fafc;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .card {
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 25px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border-color: var(--primary);
+        }
+
+        .card h2 {
+            margin-top: 0;
+            color: var(--primary);
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            color: white;
+            box-sizing: border-box;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 10px rgba(168, 85, 247, 0.3);
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            filter: brightness(1.2);
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4);
+        }
+
+        .status {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .logs {
+            grid-column: 1 / -1;
+            background: #000;
+            color: #10b981;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 20px;
+            border-radius: 15px;
+            height: 200px;
+            overflow-y: auto;
+            border-left: 4px solid var(--primary);
+        }
+
+        .badge {
+            background: var(--accent);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            vertical-align: middle;
+        }
+
+        .phase-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding: 10px;
+            background: var(--glass);
+            border-radius: 50px;
+        }
+
+        .phase-step {
+            flex: 1;
+            text-align: center;
+            font-size: 0.8rem;
+            opacity: 0.5;
+        }
+
+        .phase-step.active {
+            opacity: 1;
+            color: var(--secondary);
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>PROJET PROCUREMENT</h1>
+            <p>Tableau de Bord de Test & Démonstration</p>
+            <div id="connectionStatus" style="color: var(--accent)">Déconnecté de Hardhat Node</div>
+        </header>
+
+        <div class="phase-indicator">
+            <div class="phase-step active">1. Création</div>
+            <div class="phase-step">2. Soumission</div>
+            <div class="phase-step">3. Révélation</div>
+            <div class="phase-step">4. Gagnant</div>
+            <div class="phase-step">5. Paiement</div>
+        </div>
+
+        <div class="grid">
+            <!-- Phase 1: Création -->
+            <div class="card">
+                <h2>1. Créer Appel d'Offres <span class="badge">Admin</span></h2>
+                <input type="text" id="desc" placeholder="Description (ex: Construction École)">
+                <input type="number" id="budget" placeholder="Budget Maximum (ETH)">
+                <input type="number" id="bidDays" placeholder="Soumission (jours)">
+                <input type="number" id="revealDays" placeholder="Révélation (jours)">
+                <input type="text" id="milestones" placeholder="Jalons séparés par virgule (ex: 5,5)">
+                <button onclick="createTender()">Créer l'Appel d'Offres</button>
+            </div>
+
+            <!-- Phase 2: Soumission -->
+            <div class="card">
+                <h2>2. Soumettre une Offre <span class="badge">Privé</span></h2>
+                <input type="number" id="tenderIdInput" placeholder="ID de l'appel d'offres">
+                <input type="number" id="bidAmount" placeholder="Montant de l'offre (ETH)">
+                <input type="text" id="secretNonce" placeholder="Phrase secrète (Nonce)" value="mon_secret_123">
+                <button onclick="submitBid()">Générer Hash & Soumettre</button>
+                <div id="nonceRecord" style="margin-top:10px; font-size: 0.7rem; word-break: break-all;"></div>
+            </div>
+
+            <!-- Phase 3: Révélation -->
+            <div class="card">
+                <h2>3. Révéler une Offre</h2>
+                <input type="number" id="revealTenderId" placeholder="ID de l'appel d'offres">
+                <input type="number" id="revealAmount" placeholder="Montant ETH original">
+                <input type="text" id="revealNonce" placeholder="Entrez votre Nonce">
+                <button onclick="revealBid()">Révéler & Valider l'Offre</button>
+            </div>
+
+            <!-- Phase 4 & 5: Gagnant & Jalons -->
+            <div class="card">
+                <h2>4 & 5. Gagnant & Jalons</h2>
+                <button onclick="selectWinner()">Sélectionner le Gagnant</button>
+                <hr style="border: 0.5px solid var(--glass-border); margin: 20px 0;">
+                <input type="number" id="msTenderId" placeholder="ID Appel d'offres">
+                <input type="number" id="msId" placeholder="ID Jalon (0, 1...)">
+                <button style="background: var(--accent)" onclick="approveAndPay()">Approuver & Payer Jalon</button>
+            </div>
+
+            <div class="logs" id="logs">
+                [SYSTEM] Prêt pour les tests locaux...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let provider, signer, contract;
+        let contractAddress = "";
+        const abi = [
+            "function createTender(bytes32,uint256,uint256,uint256,uint256[]) external returns (uint256)",
+            "function submitBid(uint256,bytes32) external",
+            "function revealBid(uint256,uint256,bytes32) external",
+            "function selectWinner(uint256) external",
+            "function approveMilestone(uint256,uint256) external",
+            "function releasePayment(uint256,uint256) external",
+            "event TenderCreated(uint256 indexed tenderId, bytes32 descriptionHash, uint256 maxBudget, uint256 bidDeadline, uint256 revealDeadline)",
+            "event BidSubmitted(uint256 indexed tenderId, address indexed bidder, bytes32 hashedBid)",
+            "event WinnerSelected(uint256 indexed tenderId, address indexed winner, uint256 winningAmount)"
+        ];
+
+        async function init() {
+            try {
+                if (window.ethereum) {
+                    provider = new ethers.providers.Web3Provider(window.ethereum);
+                    await provider.send("eth_requestAccounts", []);
+                    signer = provider.getSigner();
+                    document.getElementById('connectionStatus').innerText = "Connecté via MetaMask";
+                } else {
+                    provider = new ethers.providers.JsonRpcProvider("http://localhost:8545");
+                    signer = provider.getSigner(0);
+                    document.getElementById('connectionStatus').innerText = "Connecté à Hardhat (Nœud Local)";
+                }
+                document.getElementById('connectionStatus').style.color = "#10b981";
+                log("Interface prête. N'oubliez pas de configurer l'adresse du contrat.");
+            } catch (e) {
+                log("Erreur de connexion : " + e.message);
+            }
+        }
+
+        function log(msg) {
+            const l = document.getElementById('logs');
+            l.innerHTML += `<br>[${new Date().toLocaleTimeString()}] ${msg}`;
+            l.scrollTop = l.scrollHeight;
+        }
+
+        async function getContract() {
+            const addr = prompt("Veuillez entrer l'adresse du contrat déployé :");
+            if (!addr) return null;
+            return new ethers.Contract(addr, abi, signer);
+        }
+
+        async function createTender() {
+            try {
+                const desc = document.getElementById('desc').value;
+                const budget = ethers.utils.parseEther(document.getElementById('budget').value || "1");
+                const bidDur = parseInt(document.getElementById('bidDays').value) * 86400;
+                const revDur = parseInt(document.getElementById('revealDays').value) * 86400;
+                const ms = document.getElementById('milestones').value.split(',').map(v => ethers.utils.parseEther(v.trim()));
+
+                const descHash = ethers.utils.keccak256(ethers.utils.toUtf8Bytes(desc));
+
+                const c = await getContract();
+                if (!c) return;
+
+                log("Envoi de la transaction de création...");
+                const tx = await c.createTender(descHash, budget, bidDur, revDur, ms);
+                await tx.wait();
+                log("Succès ! Appel d'offres créé.");
+            } catch (e) { log("Erreur : " + e.message); }
+        }
+
+        async function submitBid() {
+            try {
+                const id = document.getElementById('tenderIdInput').value;
+                const amount = ethers.utils.parseEther(document.getElementById('bidAmount').value);
+                const nonce = document.getElementById('secretNonce').value;
+                const nonceBytes = ethers.utils.formatBytes32String(nonce);
+
+                // Hash = keccak256(abi.encodePacked(amount, nonce))
+                const hash = ethers.utils.solidityKeccak256(["uint256", "bytes32"], [amount, nonceBytes]);
+
+                const c = await getContract();
+                if (!c) return;
+
+                log("Soumission de l'offre hachée...");
+                const tx = await c.submitBid(id, hash);
+                await tx.wait();
+
+                document.getElementById('nonceRecord').innerText = `CONSERVEZ CECI : Montant=${document.getElementById('bidAmount').value} ETH | Nonce=${nonce}`;
+                log("Offre soumise avec succès ! Gardez vos informations secrètes.");
+            } catch (e) { log("Erreur : " + e.message); }
+        }
+
+        async function revealBid() {
+            try {
+                const id = document.getElementById('revealTenderId').value;
+                const amount = ethers.utils.parseEther(document.getElementById('revealAmount').value);
+                const nonce = document.getElementById('revealNonce').value;
+                const nonceBytes = ethers.utils.formatBytes32String(nonce);
+
+                const c = await getContract();
+                if (!c) return;
+
+                log("Révélation de l'offre...");
+                const tx = await c.revealBid(id, amount, nonceBytes);
+                await tx.wait();
+                log("Offre révélée et validée !");
+            } catch (e) { log("Erreur : " + e.message); }
+        }
+
+        async function selectWinner() {
+            try {
+                const id = prompt("Entrez l'ID du Tender :");
+                const c = await getContract();
+                if (!c) return;
+                const tx = await c.selectWinner(id);
+                await tx.wait();
+                log("Gagnant sélectionné ! Vérifiez les logs Hardhat.");
+            } catch (e) { log("Erreur : " + e.message); }
+        }
+
+        async function approveAndPay() {
+            try {
+                const tid = document.getElementById('msTenderId').value;
+                const mid = document.getElementById('msId').value;
+                const c = await getContract();
+                if (!c) return;
+
+                log("Approbation du jalon...");
+                const tx1 = await c.approveMilestone(tid, mid);
+                await tx1.wait();
+
+                log("Libération du paiement...");
+                const tx2 = await c.releasePayment(tid, mid);
+                await tx2.wait();
+                log("Jalon payé avec succès !");
+            } catch (e) { log("Erreur : " + e.message); }
+        }
+
+        init();
+    </script>
+</body>
+
+</html>

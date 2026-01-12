@@ -1,0 +1,131 @@
+{
+  "name": "projet-blockchain-dreoui-karkach",
+  "version": "1.0.0",
+  "description": "Decentralized Public Procurement Tracking System - Blockchain & Smart Contracts Project",
+  "main": "index.js",
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "test:gas": "hardhat test --gas",
+    "test:coverage": "hardhat coverage",
+    "test:watch": "hardhat test --watch",
+    "deploy": "hardhat run scripts/deploy.js",
+    "deploy:local": "hardhat run scripts/deploy.js --network localhost",
+    "deploy:goerli": "hardhat run scripts/deploy.js --network goerli",
+    "deploy:sepolia": "hardhat run scripts/deploy.js --network sepolia",
+    "node": "hardhat node",
+    "node:fork": "hardhat node --fork https://eth-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY}",
+    "cli": "node scripts/cli.js",
+    "lint": "solhint 'contracts/**/*.sol'",
+    "lint:fix": "solhint 'contracts/**/*.sol' --fix",
+    "format": "prettier --write 'contracts/**/*.sol' 'test/**/*.js' 'scripts/**/*.js'",
+    "format:check": "prettier --check 'contracts/**/*.sol' 'test/**/*.js' 'scripts/**/*.js'",
+    "verify": "hardhat verify",
+    "verify:goerli": "hardhat verify --network goerli",
+    "flatten": "hardhat flatten contracts/Procurement.sol > flattened.sol",
+    "gas-report": "REPORT_GAS=true hardhat test",
+    "clean": "hardhat clean",
+    "clean:all": "rm -rf artifacts cache coverage deployments",
+    "security-check": "slither contracts/Procurement.sol",
+    "size": "hardhat size-contracts",
+    "console": "hardhat console",
+    "accounts": "hardhat run scripts/listAccounts.js",
+    "fund": "hardhat run scripts/fundAccounts.js",
+    "graph": "hardhat run scripts/generateCallGraph.js"
+  },
+  "keywords": [
+    "blockchain",
+    "ethereum",
+    "smart-contracts",
+    "procurement",
+    "tender",
+    "decentralized",
+    "solidity",
+    "hardhat",
+    "web3"
+  ],
+  "author": "Charifa Dreoui & Safae Karkach",
+  "license": "MIT",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^3.0.0",
+    "@nomicfoundation/hardhat-verify": "^1.1.1",
+    "@nomiclabs/hardhat-ethers": "^2.2.3",
+    "@nomiclabs/hardhat-waffle": "^2.0.6",
+    "@openzeppelin/contracts": "^4.9.3",
+    "@openzeppelin/test-helpers": "^0.5.16",
+    "@typechain/ethers-v5": "^10.2.1",
+    "@typechain/hardhat": "^9.1.0",
+    "@types/chai": "^4.3.5",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "^20.5.7",
+    "chai": "^4.3.7",
+    "dotenv": "^16.3.1",
+    "ethereum-waffle": "^4.0.10",
+    "ethers": "^5.7.2",
+    "hardhat": "^2.17.0",
+    "hardhat-contract-sizer": "^2.8.0",
+    "hardhat-gas-reporter": "^1.0.9",
+    "hardhat-abi-exporter": "^2.10.1",
+    "hardhat-docgen": "^1.3.0",
+    "prettier": "^3.0.3",
+    "prettier-plugin-solidity": "^1.1.3",
+    "solhint": "^3.6.2",
+    "solidity-coverage": "^0.8.5",
+    "ts-node": "^10.9.1",
+    "typechain": "^8.3.1",
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "@chainlink/contracts": "^0.8.0",
+    "axios": "^1.5.0",
+    "commander": "^11.0.0",
+    "inquirer": "^9.2.11",
+    "ora": "^6.3.1",
+    "readline": "^1.3.0",
+    "web3": "^1.9.0",
+    "yargs": "^17.7.2"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=7.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/charifa00/Projet_Blockchain_SMART_CONTRACT.git"
+  },
+  "bugs": {
+    "url": "https://github.com/charifa00/Projet_Blockchain_SMART_CONTRACT/issues"
+  },
+  "homepage": "https://github.com/charifa00/Projet_Blockchain_SMART_CONTRACT#readme",
+  "files": [
+    "contracts/",
+    "scripts/",
+    "test/",
+    "reports/",
+    "hardhat.config.js",
+    "README.md",
+    "LICENSE"
+  ],
+  "directories": {
+    "contracts": "contracts",
+    "test": "test",
+    "scripts": "scripts",
+    "deployments": "deployments",
+    "artifacts": "artifacts",
+    "cache": "cache"
+  },
+  "config": {
+    "solidity": "0.8.19",
+    "gasReporter": {
+      "currency": "USD",
+      "gasPrice": 30,
+      "enabled": true
+    },
+    "contractSizer": {
+      "alphaSort": true,
+      "disambiguatePaths": false,
+      "runOnCompile": true,
+      "strict": true
+    }
+  }
+}
